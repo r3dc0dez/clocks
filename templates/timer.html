@@ -36,21 +36,75 @@
         }
 
         .timer {
-            text-align: center;
             padding: 40px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
-            width: 90%;
-            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, 
+                rgba(0, 180, 216, 0.1) 0%,
+                transparent 50%);
+            animation: rotate 15s linear infinite;
+            pointer-events: none;
+            z-index: 0;
         }
 
         .time-display {
-            font-size: 4em;
-            font-family: 'Courier New', monospace;
-            margin: 20px 0;
-            color: #00b4d8;
-            text-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+            font-size: 5em;
+            font-family: 'Roboto Mono', monospace;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(0, 180, 216, 0.8);
+            letter-spacing: 4px;
+            position: relative;
+            padding: 20px;
+            z-index: 2;
+        }
+
+        .time-display::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(0, 180, 216, 0.8),
+                transparent
+            );
+            animation: scan 2s linear infinite;
+        }
+
+        .time-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(0, 180, 216, 0.5);
+            border-radius: 50%;
+            animation: float 3s infinite;
         }
 
         .time-input {
@@ -59,6 +113,8 @@
             gap: 15px;
             margin: 20px 0;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
         }
 
         .input-group {
@@ -74,20 +130,22 @@
         }
 
         .time-input input {
-            width: 70px;
-            padding: 10px;
-            font-size: 1.2em;
+            padding: 12px;
+            font-size: 1.3em;
             background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 8px;
+            border: 2px solid rgba(0, 180, 216, 0.3);
+            border-radius: 12px;
             color: white;
-            text-align: center;
-            transition: background 0.3s;
+            width: 80px;
+            position: relative;
+            z-index: 2;
         }
 
         .time-input input:focus {
             outline: none;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #00b4d8;
+            box-shadow: 0 0 15px rgba(0, 180, 216, 0.3);
         }
 
         .controls {
@@ -96,13 +154,15 @@
             gap: 15px;
             margin: 20px 0;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
         }
 
         .btn {
             font-size: 1.2em;
-            padding: 12px 25px;
+            padding: 15px 30px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             color: white;
             transition: all 0.3s;
@@ -125,33 +185,66 @@
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
         .btn:active {
             transform: translateY(0);
         }
 
-        .progress-ring {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            margin: 20px auto;
+        @keyframes scan {
+            0% {
+                width: 0;
+                opacity: 0;
+            }
+            50% {
+                width: 100%;
+                opacity: 1;
+            }
+            100% {
+                width: 0;
+                opacity: 0;
+            }
         }
 
-        .progress-ring circle {
-            transition: stroke-dashoffset 0.3s;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-            stroke: #00b4d8;
-            fill: transparent;
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
-        .progress-ring-bg {
-            stroke: rgba(255, 255, 255, 0.1);
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(-20px) translateX(10px);
+                opacity: 1;
+            }
         }
 
+        .progress-ring, .progress-ring-circle, .progress-ring-bg {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .time-display {
+                font-size: 3em;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
         .back-button {
             position: absolute;
             top: 20px;
@@ -171,22 +264,82 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        @media (max-width: 600px) {
-            .time-display {
-                font-size: 3em;
-            }
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            .progress-ring {
-                width: 200px;
-                height: 200px;
-            }
+        /* Add new styles for the alarm overlay */
+        .alarm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .alarm-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            animation: pulse 2s infinite;
+            border: 2px solid rgba(0, 180, 216, 0.3);
+            box-shadow: 0 0 30px rgba(0, 180, 216, 0.3);
+        }
+
+        .alarm-content h2 {
+            font-size: 2.5em;
+            margin-bottom: 1rem;
+            color: #00b4d8;
+            text-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+        }
+
+        .alarm-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .alarm-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            color: white;
+            font-size: 1.2em;
+            transition: all 0.3s;
+            min-width: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(0, 180, 216, 0.3);
+        }
+
+        .alarm-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 180, 216, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .alarm-btn.snooze {
+            background: linear-gradient(45deg, #00b4d8, #90e0ef);
+        }
+
+        .alarm-btn.dismiss {
+            background: linear-gradient(45deg, #ff6b6b, #ff8585);
+        }
+
+        .alarm-btn.mute {
+            background: linear-gradient(45deg, #4c4c6d, #5c5c8d);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
@@ -201,10 +354,13 @@
     </div>
 
     <div class="timer">
-        <svg class="progress-ring" width="300" height="300">
-            <circle class="progress-ring-bg" r="120" cx="150" cy="150" stroke-width="8"/>
-            <circle class="progress-ring-circle" r="120" cx="150" cy="150" stroke-width="8"/>
-        </svg>
+        <div class="time-particles">
+            <div class="particle" style="left: 10%; top: 20%"></div>
+            <div class="particle" style="left: 30%; top: 50%"></div>
+            <div class="particle" style="left: 70%; top: 30%"></div>
+            <div class="particle" style="left: 90%; top: 60%"></div>
+            <div class="particle" style="left: 50%; top: 80%"></div>
+        </div>
         
         <div class="time-display" id="display">00:00:00</div>
         
@@ -235,11 +391,29 @@
         </div>
     </div>
 
+    <div class="alarm-overlay" id="alarmOverlay">
+        <div class="alarm-content">
+            <h2>Time's Up!</h2>
+            <div class="alarm-buttons">
+                <button class="alarm-btn snooze" id="snoozeBtn">
+                    <i class="fas fa-clock"></i> Snooze +5m
+                </button>
+                <button class="alarm-btn mute" id="muteBtn">
+                    <i class="fas fa-volume-mute"></i> Mute
+                </button>
+                <button class="alarm-btn dismiss" id="dismissBtn">
+                    <i class="fas fa-times"></i> Dismiss
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let timeLeft;
         let totalTime;
         let timerInterval;
         let running = false;
+        let alarmMuted = false;
 
         const display = document.getElementById('display');
         const startStopButton = document.getElementById('startStop');
@@ -247,19 +421,14 @@
         const hoursInput = document.getElementById('hours');
         const minutesInput = document.getElementById('minutes');
         const secondsInput = document.getElementById('seconds');
-        const circle = document.querySelector('.progress-ring-circle');
         const clickSound = new Audio('/static/sounds/click.mp3');
         const alarmSound = new Audio('/static/sounds/alarm.mp3');
+        const alarmOverlay = document.getElementById('alarmOverlay');
+        const snoozeBtn = document.getElementById('snoozeBtn');
+        const muteBtn = document.getElementById('muteBtn');
+        const dismissBtn = document.getElementById('dismissBtn');
 
-        const radius = circle.r.baseVal.value;
-        const circumference = radius * 2 * Math.PI;
-        circle.style.strokeDasharray = `${circumference} ${circumference}`;
-        circle.style.strokeDashoffset = circumference;
-
-        function setProgress(percent) {
-            const offset = circumference - (percent / 100 * circumference);
-            circle.style.strokeDashoffset = offset;
-        }
+        alarmSound.loop = true;
 
         function formatTime(totalSeconds) {
             const hours = Math.floor(totalSeconds / 3600);
@@ -270,8 +439,45 @@
 
         function updateDisplay() {
             display.textContent = formatTime(timeLeft);
-            const progress = ((totalTime - timeLeft) / totalTime) * 100;
-            setProgress(100 - progress);
+        }
+
+        function showAlarmOverlay() {
+            alarmOverlay.style.display = 'flex';
+            if (!alarmMuted) {
+                alarmSound.play();
+            }
+        }
+
+        function hideAlarmOverlay() {
+            alarmOverlay.style.display = 'none';
+            alarmSound.pause();
+            alarmSound.currentTime = 0;
+        }
+
+        function snoozeAlarm() {
+            hideAlarmOverlay();
+            timeLeft = 5 * 60; 
+            totalTime = timeLeft;
+            running = true;
+            startStopButton.innerHTML = '<i class="fas fa-pause"></i> Pause';
+            startStopButton.classList.replace('start', 'stop');
+            startTimer();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    running = false;
+                    timerInterval = null;
+                    startStopButton.innerHTML = '<i class="fas fa-play"></i> Start';
+                    startStopButton.classList.replace('stop', 'start');
+                    showAlarmOverlay();
+                }
+            }, 1000);
         }
 
         function startStop() {
@@ -294,21 +500,7 @@
                 running = true;
                 startStopButton.innerHTML = '<i class="fas fa-pause"></i> Pause';
                 startStopButton.classList.replace('start', 'stop');
-                
-                timerInterval = setInterval(() => {
-                    timeLeft--;
-                    updateDisplay();
-                    
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        running = false;
-                        timerInterval = null;
-                        alarmSound.play();
-                        startStopButton.innerHTML = '<i class="fas fa-play"></i> Start';
-                        startStopButton.classList.replace('stop', 'start');
-                        resetTimer();
-                    }
-                }, 1000);
+                startTimer();
             } else {
                 clearInterval(timerInterval);
                 running = false;
@@ -330,8 +522,23 @@
             hoursInput.value = '0';
             minutesInput.value = '0';
             secondsInput.value = '0';
-            setProgress(100);
         }
+
+        snoozeBtn.addEventListener('click', snoozeAlarm);
+        muteBtn.addEventListener('click', () => {
+            alarmMuted = !alarmMuted;
+            if (alarmMuted) {
+                alarmSound.pause();
+                muteBtn.innerHTML = '<i class="fas fa-volume-up"></i> Unmute';
+            } else {
+                alarmSound.play();
+                muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i> Mute';
+            }
+        });
+        dismissBtn.addEventListener('click', () => {
+            hideAlarmOverlay();
+            resetTimer();
+        });
 
         startStopButton.addEventListener('click', startStop);
         resetButton.addEventListener('click', resetTimer);
@@ -344,7 +551,6 @@
                 window.location.href = '/';
             }, 200);
         });
-        setProgress(100);
     </script>
 </body>
 </html>

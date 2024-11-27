@@ -320,7 +320,8 @@
         function addDayClickHandler(dayElement) {
             dayElement.addEventListener('click', () => {
                 clickSound.play();
-                const targetDate = new Date(dayElement.dataset.date);
+                const targetDate = new Date(dayElement.dataset.date + 'T00:00:00');
+                targetDate.setHours(targetDate.getHours() + 24);  
                 showCountdownOverlay(dayElement, targetDate);
             });
         }
