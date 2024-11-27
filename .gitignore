@@ -1,3 +1,6 @@
+# Custom
+git.bat
+
 # Python
 __pycache__/
 *.py[cod]
