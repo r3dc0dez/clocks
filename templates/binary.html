@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Clock</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="/static/images/icon.png">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #00b4d8, #90e0ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .binary-clock {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .digital-time {
+            font-size: 3em;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            color: #00b4d8;
+            text-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+        }
+
+        .binary-display {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .binary-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .binary-digit {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 5px auto;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .binary-digit.active {
+            background: #00b4d8;
+            box-shadow: 0 0 20px rgba(0, 180, 216, 0.5);
+        }
+
+        .binary-labels {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+            margin-top: 10px;
+            color: #90e0ef;
+            font-size: 0.9em;
+        }
+
+        .binary-value {
+            font-family: 'Courier New', monospace;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8em;
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .help-text {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .binary-clock {
+                padding: 20px;
+            }
+            .binary-display {
+                gap: 10px;
+            }
+            .binary-digit {
+                width: 30px;
+                height: 30px;
+            }
+            .digital-time {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back
+    </a>
+
+    <div class="header">
+        <h1>Binary Clock</h1>
+    </div>
+
+    <div class="binary-clock">
+        <div class="digital-time" id="digital-time">00:00:00</div>
+        
+        <div class="binary-display" id="binary-display">
+        </div>
+
+        <div class="binary-labels">
+            <div>Hour 10s</div>
+            <div>Hour 1s</div>
+            <div>Min 10s</div>
+            <div>Min 1s</div>
+            <div>Sec 10s</div>
+            <div>Sec 1s</div>
+        </div>
+
+        <div class="help-text">
+            Each column represents a decimal digit in binary (from top: 8, 4, 2, 1).<br>
+            Lit dots indicate 1, unlit dots indicate 0.<br>
+            Example: 1010 = 8 + 0 + 2 + 0 = 10
+        </div>
+    </div>
+
+    <script>
+        const clickSound = new Audio('/static/sounds/click.mp3');
+
+        function createBinaryColumn() {
+            const column = document.createElement('div');
+            column.className = 'binary-column';
+            for (let i = 3; i >= 0; i--) {
+                const digit = document.createElement('div');
+                digit.className = 'binary-digit';
+                
+                const value = document.createElement('div');
+                value.className = 'binary-value';
+                value.textContent = Math.pow(2, i);
+                
+                digit.appendChild(value);
+                column.appendChild(digit);
+            }
+            
+            return column;
+        }
+
+        const binaryDisplay = document.getElementById('binary-display');
+        for (let i = 0; i < 6; i++) {
+            binaryDisplay.appendChild(createBinaryColumn());
+        }
+
+        function updateBinaryClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            document.getElementById('digital-time').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            const digits = [
+                Math.floor(hours / 10),
+                hours % 10,
+                Math.floor(minutes / 10),
+                minutes % 10,
+                Math.floor(seconds / 10),
+                seconds % 10
+            ];
+
+            const columns = document.querySelectorAll('.binary-column');
+            digits.forEach((digit, columnIndex) => {
+                const binary = digit.toString(2).padStart(4, '0');
+                const dots = columns[columnIndex].querySelectorAll('.binary-digit');
+                
+                binary.split('').forEach((bit, bitIndex) => {
+                    dots[bitIndex].classList.toggle('active', bit === '1');
+                });
+            });
+        }
+
+        const backButton = document.querySelector('.back-button');
+        backButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            clickSound.play();
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 200);
+        });
+
+        document.querySelectorAll('.binary-digit').forEach(digit => {
+            digit.addEventListener('mouseenter', () => {
+                clickSound.volume = 0.2;
+                clickSound.play();
+            });
+        });
+        setInterval(updateBinaryClock, 1000);
+        updateBinaryClock();
+    </script>
+</body>
+</html>
