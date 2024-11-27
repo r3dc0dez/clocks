@@ -11,7 +11,7 @@
 
   A fully responsive web application featuring multiple clock types, <br />Responsive for all devices, built using Python (Flask), HTML, CSS, and JavaScript.
 
-  <a href="https://github.com/r3dc0dez/clocks" target="_blank" rel="noopener noreferrer"><strong>➥ Live Preview</strong></a>
+  <a href="clocks-one.vercel.app/templates/selection.html" target="_blank" rel="noopener noreferrer"><strong>➥ Live Preview</strong></a>
 
 </div>
 
