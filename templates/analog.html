@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analog Clock</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="/static/images/icon.png">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .clock-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3),
+                        inset 0 0 30px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+        }
+
+        .clock {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 180, 216, 0.2);
+        }
+
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            border-radius: 5px;
+        }
+
+        .hour {
+            width: 4px;
+            height: 25%;
+            background: #00b4d8;
+            transform: translateX(-50%);
+        }
+
+        .minute {
+            width: 3px;
+            height: 35%;
+            background: #90e0ef;
+            transform: translateX(-50%);
+        }
+
+        .second {
+            width: 2px;
+            height: 40%;
+            background: #ff6b6b;
+            transform: translateX(-50%);
+        }
+
+        .center-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #00b4d8;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .number {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 1.2em;
+            color: #90e0ef;
+            transform: rotate(var(--rotation));
+        }
+
+        .number span {
+            display: inline-block;
+            transform: rotate(calc(-1 * var(--rotation)));
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .digital-time {
+            font-size: 2em;
+            margin-top: 30px;
+            font-family: 'Courier New', monospace;
+            color: #00b4d8;
+            text-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+        }
+
+        .date {
+            margin-top: 10px;
+            color: #90e0ef;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back
+    </a>
+    <div class="clock-container">
+        <div class="clock">
+            <div class="hand hour" id="hour-hand"></div>
+            <div class="hand minute" id="minute-hand"></div>
+            <div class="hand second" id="second-hand"></div>
+            <div class="center-dot"></div>
+            <div class="number" style="--rotation: 0deg"><span>12</span></div>
+            <div class="number" style="--rotation: 30deg"><span>1</span></div>
+            <div class="number" style="--rotation: 60deg"><span>2</span></div>
+            <div class="number" style="--rotation: 90deg"><span>3</span></div>
+            <div class="number" style="--rotation: 120deg"><span>4</span></div>
+            <div class="number" style="--rotation: 150deg"><span>5</span></div>
+            <div class="number" style="--rotation: 180deg"><span>6</span></div>
+            <div class="number" style="--rotation: 210deg"><span>7</span></div>
+            <div class="number" style="--rotation: 240deg"><span>8</span></div>
+            <div class="number" style="--rotation: 270deg"><span>9</span></div>
+            <div class="number" style="--rotation: 300deg"><span>10</span></div>
+            <div class="number" style="--rotation: 330deg"><span>11</span></div>
+        </div>
+    </div>
+    <div class="digital-time" id="digital-time">00:00:00</div>
+    <div class="date" id="date">Monday, January 1, 2024</div>
+
+    <script>
+        const hourHand = document.getElementById('hour-hand');
+        const minuteHand = document.getElementById('minute-hand');
+        const secondHand = document.getElementById('second-hand');
+        const digitalTime = document.getElementById('digital-time');
+        const dateDisplay = document.getElementById('date');
+
+        function updateClock() {
+            const now = new Date();
+            const seconds = now.getSeconds();
+            const minutes = now.getMinutes();
+            const hours = now.getHours();
+
+            const secondDegrees = ((seconds / 60) * 360) + 180;
+            const minuteDegrees = (((minutes + seconds/60) / 60) * 360) + 180;
+            const hourDegrees = (((hours % 12 + minutes/60) / 12) * 360) + 180;
+
+            secondHand.style.transform = `rotate(${secondDegrees}deg) translateX(-50%)`;
+            minuteHand.style.transform = `rotate(${minuteDegrees}deg) translateX(-50%)`;
+            hourHand.style.transform = `rotate(${hourDegrees}deg) translateX(-50%)`;
+
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            digitalTime.textContent = timeString;
+
+            const dateString = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            dateDisplay.textContent = dateString;
+        }
+
+        const backButton = document.querySelector('.back-button');
+        const clickSound = new Audio('/static/sounds/click.mp3');
+
+        backButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            clickSound.play();
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 200);
+        });
+
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>

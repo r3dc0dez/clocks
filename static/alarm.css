@@ -1,0 +1,107 @@
+.alarm-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 60vh;
+    padding: 2rem;
+}
+
+.current-time {
+    font-size: 3rem;
+    font-family: monospace;
+    margin: 2rem 0;
+    padding: 1rem 2rem;
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.alarm-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 2rem;
+}
+
+.time-input {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.time-input input {
+    width: 80px;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    text-align: center;
+    border: 1px solid var(--text-color);
+    border-radius: 5px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.alarm-label {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid var(--text-color);
+    border-radius: 5px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.set-alarm-btn {
+    padding: 1rem;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.set-alarm-btn:hover {
+    background-color: #45a049;
+}
+
+.alarms-list {
+    width: 100%;
+    max-width: 400px;
+}
+
+.alarm-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--card-bg);
+    margin-bottom: 0.5rem;
+    border-radius: 5px;
+}
+
+.alarm-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.alarm-time {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.delete-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #f44336;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #da190b;
+}
